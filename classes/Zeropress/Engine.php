@@ -10,7 +10,7 @@ use Zeropress\Entity\User;
 
 
 class Engine {
-    const VERSION = "v0.0.1";
+    const VERSION = "v?";
     
     private $user = null;
 
@@ -23,7 +23,7 @@ class Engine {
         
         $_SESSION["requestId"] = $this->requestId;
         
-        if ($cookies["zp-user"]) {
+        if (isset($cookies["zp-user"])) {
             $this->user = User::fromCookie($cookies["zp-user"]);
         }
     }

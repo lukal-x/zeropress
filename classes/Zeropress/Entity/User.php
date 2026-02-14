@@ -18,28 +18,32 @@ class User {
     }
 
     public static function fromCookie(string $token) : ?User {
-        $row = zdb::getArray(
-            "SELECT name, email FROM users WHERE session = :token;",
-            ["token" => $token]
+        $rows = zdb::getArraySafe(
+            "SELECT user_login, user_email FROM zp_users WHERE session = ?;",
+            [$token]
         );
         
-        if (! $row) {
-            throw new Exception("Failed to authenticate cookie!");
+        if (! $rows) {
+            return null;
+            // throw new Exception("Failed to authenticate cookie!");
         }
 
-        return new self($row["name"], $row["email"], $token);
+        $row = end($rows);
+        return new self($row["user_login"], $row["user_email"], $token);
     }
 
     public static function fromCredentials(string $handle, string $secret) : ?User {
-        $row = zdb::getArray(
-            "SELECT name, email FROM users WHERE handle = :handle AND secret = :secret;",
-            ["handle" => $handle, "secret" => password_hash($secret)]
+        $rows = zdb::getArraySafe(
+            "SELECT user_login, user_email FROM zp_users WHERE user_login = ? AND user_pass = ?;",
+            [$handle, password_hash($secret, PASSWORD_BCRYPT)]
         );
         
-        if (! $row) {
-            throw new Exception("Failed to authenticate credentials!");
+        if (1 > count($rows)) {
+            // throw new Exception("Failed to authenticate credentials!");
+            return null;
         }
 
-        return new self($row["name"], $row["email"], bin2hex(random_bytes(32)));
+        $row = end($rows);
+        return new self($row["user_login"], $row["user_email"], bin2hex(random_bytes(32)));
     }
 }

@@ -10,4 +10,6 @@ require_once "zerolith/zl_init.php";
 use Zeropress\Engine;
 
 session_start();
-$zp = new Engine(bin2hex(random_bytes(32)), $_COOKIE);
+
+$requestId = bin2hex(random_bytes(32));
+$zp = new Engine($requestId, $_COOKIE);

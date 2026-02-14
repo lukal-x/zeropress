@@ -8,6 +8,18 @@ services:
       - ./:/var/www/html
     ports:
       - 8080:8080
+  mysql:
+    image: mysql:latest
+    networks:
+      - zeropress
+    environment:
+      - MYSQL_ROOT_PASSWORD=zeropress
+      - MYSQL_DATABASE=zeropress
+    volumes:
+      - database:/var/lib/mysql
       
 networks:
   zeropress:
+
+volumes:
+  database:
