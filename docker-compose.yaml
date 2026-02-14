@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  php:
+    image: trafex/php-nginx
+    networks:
+      - zeropress
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - 8080:8080
+      
+networks:
+  zeropress:
